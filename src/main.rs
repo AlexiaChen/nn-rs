@@ -1,3 +1,6 @@
+use ndarray::{Array, Dim};
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand_distr::Normal;
 
 /// neural network  struct definition
 #[derive(Debug)]
@@ -6,8 +9,10 @@ struct NeuralNetwork {
     hidden_nodes: i32,
     output_nodes: i32,
     learning_rate: f64,
-    wih: Vec<f64>, // weights from input to hidden layer
-    who: Vec<f64>, // weights from hidden to output layer
+    weight_ih: Array<f64, Dim<[usize; 2]>>, // weights matrix from input to hidden layer
+    weight_ho: Array<f64, Dim<[usize; 2]>>, // weights matrix from hidden to output layer
+    activation_function: fn(f64) -> f64,
+
 }
 
 impl NeuralNetwork {
@@ -19,14 +24,33 @@ impl NeuralNetwork {
         // w11 w21
         // w12 w22 etc 
 
+        // hiddennodes*inputnodes matrix array
+        // mean 0.0 and standard deviation of 1 / sqrt(number of incoming links)
+        let wih = Array::random((hiddennodes as usize, inputnodes as usize),
+            Normal::new(0.0, (inputnodes as f64).powf(-0.5)).unwrap());
+        
+        // outputnodes*hiddennodes matrix array
+        // mean 0.0 and standard deviation of 1 / sqrt(number of hidden links)
+        let who = Array::random((outputnodes as usize, hiddennodes as usize),
+            Normal::new(0.0, (hiddennodes as f64).powf(-0.5)).unwrap());
+
+       
+        // 1 / (1 + e^(-x))
+        fn sigmoid(x: f64) -> f64 {
+            1.0 / (1.0 + (-x).exp())
+        }
         
         NeuralNetwork {
             // set number of nodes in each input, hidden, output layer
             input_nodes: inputnodes,
             hidden_nodes: hiddennodes,
             output_nodes: outputnodes,
+            weight_ih: wih,
+            weight_ho: who,
             // learning rate
             learning_rate: learningrate,
+            // activation function is the sigmoid function
+            activation_function: |x| sigmoid(x),
         }
     }
 
