@@ -55,8 +55,10 @@ impl NeuralNetwork {
     }
 
     /// train the neural network
-    fn train(&self) {
-        println!("train");
+    fn train(&self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
+        let output_vec = self.predict(input_list);
+        let target_vec =  Array::from_shape_vec((target_list.len(), 1), target_list.clone()).unwrap();
+
     }
 
     /// query the neural network
