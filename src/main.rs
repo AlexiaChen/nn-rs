@@ -81,7 +81,11 @@ impl NeuralNetwork {
 
 fn main() {
     let nn = NeuralNetwork::new(3, 3, 3, 0.3);
-    println!("{:?}", nn);
+    println!("NN is: {:?}", nn);
     nn.train();
-    //nn.predict();
+    let input_list = vec![1.0, 0.5, -1.5];
+    let o = nn.predict(&input_list);
+    // print 2D array from ndarray
+    println!("Output Vector is: {:?}", o);
+   
 }
