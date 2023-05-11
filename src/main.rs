@@ -25,12 +25,12 @@ impl NeuralNetwork {
         // w12 w22 etc 
 
         // hiddennodes*inputnodes matrix array
-        // mean 0.0 and standard deviation of 1 / sqrt(number of incoming links)
+        // mean 0.0 and standard deviation of 1 / sqrt(number of incoming links) = inputnodes^(-0.5)
         let wih = Array::random((hiddennodes as usize, inputnodes as usize),
             Normal::new(0.0, (inputnodes as f64).powf(-0.5)).unwrap());
         
         // outputnodes*hiddennodes matrix array
-        // mean 0.0 and standard deviation of 1 / sqrt(number of hidden links)
+        // mean 0.0 and standard deviation of 1 / sqrt(number of hidden links) = hiddennodes^(-0.5)
         let who = Array::random((outputnodes as usize, hiddennodes as usize),
             Normal::new(0.0, (hiddennodes as f64).powf(-0.5)).unwrap());
 
