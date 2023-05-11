@@ -1,4 +1,4 @@
-use ndarray::{Array, Dim};
+use ndarray::{Array, ArrayView, Dim};
 use ndarray_rand::RandomExt;
 use ndarray_rand::rand_distr::Normal;
 
@@ -54,12 +54,27 @@ impl NeuralNetwork {
         }
     }
 
+    /// train the neural network
     fn train(&self) {
         println!("train");
     }
 
-    fn predict(&self) {
-        println!("predict");
+    /// query the neural network
+    fn predict(&self, input_list: &Vec<f64>) -> Array<f64, Dim<[usize; 2]>>{
+        if input_list.len() != self.input_nodes as usize {
+            panic!("input list length does not match input nodes");
+        }
+        // convert input list to 2d array
+        // calculate signals into hidden layer
+        let input_vec = Array::from_shape_vec((input_list.len(), 1), input_list.clone()).unwrap();
+        let hidden_input_vec = self.weight_ih.dot(&input_vec);
+        // calculate the signals emerging from hidden layer
+        let hidden_output_vec = hidden_input_vec.mapv(|x| (self.activation_function)(x));
+        // calculate signals into final output layer
+        let final_input_vec = self.weight_ho.dot(&hidden_output_vec);
+        // calculate the signals emerging from final output layer
+        let final_output_vec = final_input_vec.mapv(|x| (self.activation_function)(x));
+        return final_output_vec;
     }
 }
 
@@ -68,5 +83,5 @@ fn main() {
     let nn = NeuralNetwork::new(3, 3, 3, 0.3);
     println!("{:?}", nn);
     nn.train();
-    nn.predict();
+    //nn.predict();
 }
