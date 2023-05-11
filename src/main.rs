@@ -2,27 +2,22 @@
 /// neural network  struct definition
 #[derive(Debug)]
 struct NeuralNetwork {
-    // input: Vec<f64>,
-    // hidden: Vec<f64>,
-    // output: Vec<f64>,
-    // weights_ih: Vec<f64>,
-    // weights_ho: Vec<f64>,
-    // bias_h: Vec<f64>,
-    // bias_o: Vec<f64>,
-    // learning_rate: f64,
+    input_nodes: i32,
+    hidden_nodes: i32,
+    output_nodes: i32,
+    learning_rate: f64,
 }
 
 impl NeuralNetwork {
-    fn new() -> NeuralNetwork {
+    /// Create a new neural network from inputnodes, hiddennodes, outputnodes, learningrate
+    fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f64) -> NeuralNetwork {
         NeuralNetwork {
-            // input: Vec::new(),
-            // hidden: Vec::new(),
-            // output: Vec::new(),
-            // weights_ih: Vec::new(),
-            // weights_ho: Vec::new(),
-            // bias_h: Vec::new(),
-            // bias_o: Vec::new(),
-            // learning_rate: 0.0,
+            // set number of nodes in each input, hidden, output layer
+            input_nodes: inputnodes,
+            hidden_nodes: hiddennodes,
+            output_nodes: outputnodes,
+            // learning rate
+            learning_rate: learningrate,
         }
     }
 
@@ -37,5 +32,8 @@ impl NeuralNetwork {
 
 
 fn main() {
-    println!("Hello, world!");
+    let nn = NeuralNetwork::new(3, 3, 3, 0.3);
+    println!("{:?}", nn);
+    nn.train();
+    nn.predict();
 }
