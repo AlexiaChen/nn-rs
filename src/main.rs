@@ -56,13 +56,13 @@ impl NeuralNetwork {
 
     /// train the neural network
     fn train(&self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
-        let output_vec = self.predict(input_list);
+        let output_vec = self.forward(input_list);
         let target_vec =  Array::from_shape_vec((target_list.len(), 1), target_list.clone()).unwrap();
 
     }
 
-    /// query the neural network
-    fn predict(&self, input_list: &Vec<f64>) -> Array<f64, Dim<[usize; 2]>>{
+    /// forward pass through the neural network
+    fn forward(&self, input_list: &Vec<f64>) -> Array<f64, Dim<[usize; 2]>>{
         if input_list.len() != self.input_nodes as usize {
             panic!("input list length does not match input nodes");
         }
@@ -78,6 +78,17 @@ impl NeuralNetwork {
         let final_output_vec = final_input_vec.mapv(|x| (self.activation_function)(x));
         return final_output_vec;
     }
+
+    /// query the neural network
+    fn predict(&self, input_list: &Vec<f64>) -> Vec<f64> {
+        let output_vec = self.forward(input_list);
+        let mut output_list = Vec::new();
+        for i in 0..output_vec.len() {
+            output_list.push(output_vec[[i, 0]]);
+        }
+        return output_list;
+    }
+
 }
 
 
