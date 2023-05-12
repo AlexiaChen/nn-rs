@@ -1,4 +1,4 @@
-use ndarray::{Array, ArrayView, Dim};
+use ndarray::{Array, Dim};
 use ndarray_rand::RandomExt;
 use ndarray_rand::rand_distr::Normal;
 
@@ -18,12 +18,6 @@ struct NeuralNetwork {
 impl NeuralNetwork {
     /// Create a new neural network from inputnodes, hiddennodes, outputnodes, learningrate
     fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f64) -> NeuralNetwork {
-        
-        // link weight matrices, wih and who
-        // weights inside the arrays are w_i_j, where link is from node i to node j in the next layer
-        // w11 w21
-        // w12 w22 etc 
-
         // hiddennodes*inputnodes matrix array
         // mean 0.0 and standard deviation of 1 / sqrt(number of nodes of next layer) = inputnodes^(-0.5)
         let wih = Array::random((hiddennodes as usize, inputnodes as usize),
@@ -34,7 +28,6 @@ impl NeuralNetwork {
         let who = Array::random((outputnodes as usize, hiddennodes as usize),
             Normal::new(0.0, (outputnodes as f64).powf(-0.5)).unwrap());
 
-       
         // 1 / (1 + e^(-x))
         fn sigmoid(x: f64) -> f64 {
             1.0 / (1.0 + (-x).exp())
@@ -86,10 +79,20 @@ impl NeuralNetwork {
         let hidden_input_vec = self.weight_ih.dot(&input_vec);
         // calculate the signals emerging from hidden layer
         let hidden_output_vec = hidden_input_vec.mapv(|x| (self.activation_function)(x));
+
+        if hidden_output_vec.shape()[0] != self.hidden_nodes as usize {
+            panic!("hidden output vec length does not match hidden nodes");
+        }
+
         // calculate signals into final output layer
         let final_input_vec = self.weight_ho.dot(&hidden_output_vec);
         // calculate the signals emerging from final output layer
         let final_output_vec = final_input_vec.mapv(|x| (self.activation_function)(x));
+
+        if final_output_vec.shape()[0] != self.output_nodes as usize {
+            panic!("final output vec length does not match output nodes");
+        }
+
         return (hidden_output_vec, final_output_vec);
     }
 
