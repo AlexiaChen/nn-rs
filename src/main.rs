@@ -55,14 +55,28 @@ impl NeuralNetwork {
     }
 
     /// train the neural network
-    fn train(&self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
-        let output_vec = self.forward(input_list);
+    fn train(&mut self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
+        let (hidden_output_vec, final_output_vec) = self.forward(input_list);
         let target_vec =  Array::from_shape_vec((target_list.len(), 1), target_list.clone()).unwrap();
+
+        // calculate the error (target - actual_output)
+        let output_errors_vec = target_vec - &final_output_vec;
+        // calculate the hidden layer errors (errors_hidden = (weights_hidden_to_output^T) * output_errors_vec)
+        let hidden_errors_vec = self.weight_ho.t().dot(&output_errors_vec);
+
+        // Update weights for the weight links between the hidden and output layers used With output_errors_vec
+        // Delta W = learning_rate * E * O * (1 - O) * hidden_output_vec^T where O is sigmoid(previous_output_vec) and E is next layer errors
+        self.weight_ho = &self.weight_ho + self.learning_rate * &output_errors_vec * &final_output_vec * (1.0 - &final_output_vec) * &hidden_output_vec.t();
+
+        // Update weights for the weight links between the input and hidden layers used With hidden_errors_vec
+        // Delta W = learning_rate * E * O * (1 - O) * input_vec^T where O is sigmoid(previous_output_vec) and E is next layer errors
+        let input_vec = Array::from_shape_vec((input_list.len(), 1), input_list.clone()).unwrap();
+        self.weight_ih = &self.weight_ih + self.learning_rate * &hidden_errors_vec * &hidden_output_vec * (1.0 - &hidden_output_vec) * &input_vec.t();
 
     }
 
     /// forward pass through the neural network
-    fn forward(&self, input_list: &Vec<f64>) -> Array<f64, Dim<[usize; 2]>>{
+    fn forward(&self, input_list: &Vec<f64>) -> (Array<f64, Dim<[usize; 2]>>, Array<f64, Dim<[usize; 2]>>){
         if input_list.len() != self.input_nodes as usize {
             panic!("input list length does not match input nodes");
         }
@@ -76,15 +90,15 @@ impl NeuralNetwork {
         let final_input_vec = self.weight_ho.dot(&hidden_output_vec);
         // calculate the signals emerging from final output layer
         let final_output_vec = final_input_vec.mapv(|x| (self.activation_function)(x));
-        return final_output_vec;
+        return (hidden_output_vec, final_output_vec);
     }
 
     /// query the neural network
     fn predict(&self, input_list: &Vec<f64>) -> Vec<f64> {
-        let output_vec = self.forward(input_list);
+        let (_, final_output_list)= self.forward(input_list);
         let mut output_list = Vec::new();
-        for i in 0..output_vec.len() {
-            output_list.push(output_vec[[i, 0]]);
+        for i in 0..final_output_list.len() {
+            output_list.push(final_output_list[[i, 0]]);
         }
         return output_list;
     }
@@ -93,7 +107,7 @@ impl NeuralNetwork {
 
 
 fn main() {
-    let nn = NeuralNetwork::new(3, 3, 3, 0.3);
+    let mut nn = NeuralNetwork::new(3, 3, 3, 0.3);
     println!("NN is: {:?}", nn);
     let input_list = vec![1.0, 0.5, -1.5];
     let target_list = vec![0.5, 1.0, 0.5];
