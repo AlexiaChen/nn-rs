@@ -4,7 +4,7 @@ use ndarray_rand::rand_distr::Normal;
 
 /// neural network  struct definition
 #[derive(Debug)]
-struct NeuralNetwork {
+pub struct NeuralNetwork {
     input_nodes: i32,
     hidden_nodes: i32,
     output_nodes: i32,
@@ -17,7 +17,7 @@ struct NeuralNetwork {
 
 impl NeuralNetwork {
     /// Create a new neural network from inputnodes, hiddennodes, outputnodes, learningrate
-    fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f64) -> NeuralNetwork {
+    pub fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f64) -> NeuralNetwork {
         // hiddennodes*inputnodes matrix array
         // mean 0.0 and standard deviation of 1 / sqrt(number of nodes of next layer) = inputnodes^(-0.5)
         let wih = Array::random((hiddennodes as usize, inputnodes as usize),
@@ -48,7 +48,7 @@ impl NeuralNetwork {
     }
 
     /// train the neural network
-    fn train(&mut self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
+    pub fn train(&mut self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
         let (hidden_output_vec, final_output_vec) = self.forward(input_list);
         let target_vec =  Array::from_shape_vec((target_list.len(), 1), target_list.clone()).unwrap();
 
@@ -69,7 +69,7 @@ impl NeuralNetwork {
     }
 
     /// forward pass through the neural network
-    fn forward(&self, input_list: &Vec<f64>) -> (Array<f64, Dim<[usize; 2]>>, Array<f64, Dim<[usize; 2]>>){
+    pub fn forward(&self, input_list: &Vec<f64>) -> (Array<f64, Dim<[usize; 2]>>, Array<f64, Dim<[usize; 2]>>){
         if input_list.len() != self.input_nodes as usize {
             panic!("input list length does not match input nodes");
         }
@@ -97,7 +97,7 @@ impl NeuralNetwork {
     }
 
     /// query the neural network
-    fn predict(&self, input_list: &Vec<f64>) -> Vec<f64> {
+    pub fn predict(&self, input_list: &Vec<f64>) -> Vec<f64> {
         let (_, final_output_list)= self.forward(input_list);
         let mut output_list = Vec::new();
         for i in 0..final_output_list.len() {
@@ -108,16 +108,17 @@ impl NeuralNetwork {
 
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-fn main() {
-    let mut nn = NeuralNetwork::new(3, 3, 3, 0.3);
-    println!("NN is: {:?}", nn);
-    let input_list = vec![1.0, 0.5, -1.5];
-    let target_list = vec![0.5, 1.0, 0.5];
-    let o = nn.predict(&input_list);
-    println!("Output Vector Before train is: {:?}", o);
-    nn.train(&input_list, &target_list);
-    let o = nn.predict(&input_list);
-    println!("Output Vector After train is: {:?}", o);
-   
+    #[test]
+    fn it_works() {
+        let mut nn = NeuralNetwork::new(3, 3, 3, 0.3);
+        let input_list = vec![1.0, 0.5, -1.5];
+        let target_list = vec![0.5, 1.0, 0.5];
+        nn.train(&input_list, &target_list);
+        let output_list = nn.predict(&input_list);
+        println!("{:?}", output_list);
+    }
 }
