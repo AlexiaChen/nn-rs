@@ -5,5 +5,16 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "nn"
+path = "src/nn.rs"
+
+[[bin]]
+name = "nn-image"
+path = "src/nn_image.rs"
+
+
 [dependencies]
 nn = { path = "../nn" }
+ndarray-image = "0.3.0"
+image = "0.24.6"
