@@ -16,5 +16,6 @@ path = "src/nn_image.rs"
 
 [dependencies]
 nn = { path = "../nn" }
-ndarray-image = "0.3.0"
 image = "0.24.6"
+csv = "1.2.1"
+ndarray = "0.15.6"
