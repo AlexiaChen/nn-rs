@@ -33,7 +33,7 @@ fn save_record_to_image(record: &StringRecord, file_name: &str) {
 
 fn main() -> Result<(), Box<dyn Error>> {
    
-    let mut file = File::open("./dataset/mnist_train.csv")?;
+    let mut file = File::open("./dataset/mnist_train.csv").expect("you must download the dataset first, https://pjreddie.com/projects/mnist-in-csv/");
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
