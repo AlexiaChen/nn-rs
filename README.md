@@ -14,10 +14,16 @@ https://pjreddie.com/projects/mnist-in-csv/
 The format is:
 
 ```txt
-label, pix-11, pix-12, pix-13, ...
+label, pix-11, pix-12, pix-13, ... , pix-nn \n
+newlabel, pix-11, pix-12, pix-13, ... , pix-nn \n
+...
 ```
 
 where pix-ij is the pixel in the i-th row and j-th column.
+
+pix-nn is 28*28 = 784 pixel values in the range 0-255 gray values.
+
+label is the digit represented by the image.
 
 For the curious, this is the script to generate the csv files from the [original data](http://yann.lecun.com/exdb/mnist/)
 
@@ -48,3 +54,9 @@ convert("train-images-idx3-ubyte", "train-labels-idx1-ubyte",
 convert("t10k-images-idx3-ubyte", "t10k-labels-idx1-ubyte",
         "mnist_test.csv", 10000)
 ```
+
+# FAQ
+
+Q: Why need to seperate the train data set and test data set?
+A: That is we want  to test before we train the model. Otherwise, we can let network to remember the training data set and get a high accuracy. But it is not a good model. So that it is normal case in machine learning to seperate the train data set and test data set.
+
