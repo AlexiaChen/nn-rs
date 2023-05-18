@@ -1,7 +1,7 @@
 # nn-rs
 A traditional neural network with Rust
 
-# MNIST handwritten digit database
+## MNIST handwritten digit database
 
 original format:
 http://yann.lecun.com/exdb/mnist/
