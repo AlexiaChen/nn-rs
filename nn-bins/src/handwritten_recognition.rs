@@ -37,7 +37,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let recognize_image_path = &args[2];
 
     let img = image::open(recognize_image_path).unwrap();
-    println!("Image colorType: {:?}", img.color());
     // to grayscale image
     let mut gray_img = img.grayscale();
     gray_img.invert();
@@ -54,7 +53,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let image_array: Array<u8, Dim<[usize; 2]>> = Array::from_shape_vec((28, 28), gray_buffer.clone()).unwrap();
 
-    println!("Image array: {:?}", image_array);
     // write image array to txt file
     let mut file = File::create("./images/image_array.txt").unwrap();
     file.write_all(format!("{:?}", image_array).as_bytes()).unwrap();
