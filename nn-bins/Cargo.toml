@@ -19,6 +19,10 @@ path = "src/nn_image.rs"
 name = "nn-scaler"
 path = "src/nn_data_scaler.rs"
 
+[[bin]]
+name = "nn-mnist-zero"
+path = "src/nn_mnist_train_part_zero.rs"
+
 
 [dependencies]
 nn = { path = "../nn" }
