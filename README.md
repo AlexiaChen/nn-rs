@@ -9,6 +9,17 @@ http://yann.lecun.com/exdb/mnist/
 converted csv format:
 https://pjreddie.com/projects/mnist-in-csv/
 
+## How to use it to recognize the handwritten digit?
+
+```bash
+./target/release/handwritten-digit-recognition ./dataset/mnist_train <path-of-image>
+```
+
+NOTE: the prefix name "2828_my_own" images are from https://github.com/makeyourownneuralnetwork/makeyourownneuralnetwork/tree/master/my_own_images
+the prefix name "handwrite" images are from mine created from Windows Paint
+
+The Performance of prefix name "2828_my_own" images is better than the prefix "handwrite" images. I think that is because the digit in the the prefix name "2828_my_own" images are more bold than the digit in the prefix name "handwrite" images.
+
 ## MNIST in CSV
 
 The format is:
