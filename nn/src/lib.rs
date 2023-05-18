@@ -8,28 +8,28 @@ pub struct NeuralNetwork {
     input_nodes: i32,
     hidden_nodes: i32,
     output_nodes: i32,
-    learning_rate: f64,
-    weight_ih: Array<f64, Dim<[usize; 2]>>, // weights matrix from input to hidden layer
-    weight_ho: Array<f64, Dim<[usize; 2]>>, // weights matrix from hidden to output layer
-    activation_function: fn(f64) -> f64,
+    learning_rate: f32,
+    weight_ih: Array<f32, Dim<[usize; 2]>>, // weights matrix from input to hidden layer
+    weight_ho: Array<f32, Dim<[usize; 2]>>, // weights matrix from hidden to output layer
+    activation_function: fn(f32) -> f32,
 
 }
 
 impl NeuralNetwork {
     /// Create a new neural network from inputnodes, hiddennodes, outputnodes, learningrate
-    pub fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f64) -> NeuralNetwork {
+    pub fn new(inputnodes: i32, hiddennodes: i32, outputnodes: i32, learningrate: f32) -> NeuralNetwork {
         // hiddennodes*inputnodes matrix array
         // mean 0.0 and standard deviation of 1 / sqrt(number of nodes of next layer) = inputnodes^(-0.5)
         let wih = Array::random((hiddennodes as usize, inputnodes as usize),
-            Normal::new(0.0, (hiddennodes as f64).powf(-0.5)).unwrap());
+            Normal::new(0.0, (hiddennodes as f32).powf(-0.5)).unwrap());
         
         // outputnodes*hiddennodes matrix array
         // mean 0.0 and standard deviation of 1 / sqrt(number of nodes of next layer) = hiddennodes^(-0.5)
         let who = Array::random((outputnodes as usize, hiddennodes as usize),
-            Normal::new(0.0, (outputnodes as f64).powf(-0.5)).unwrap());
+            Normal::new(0.0, (outputnodes as f32).powf(-0.5)).unwrap());
 
         // 1 / (1 + e^(-x))
-        fn sigmoid(x: f64) -> f64 {
+        fn sigmoid(x: f32) -> f32 {
             1.0 / (1.0 + (-x).exp())
         }
         
@@ -48,7 +48,7 @@ impl NeuralNetwork {
     }
 
     /// train the neural network
-    pub fn train(&mut self, input_list: &Vec<f64>, target_list: &Vec<f64>) {
+    pub fn train(&mut self, input_list: &Vec<f32>, target_list: &Vec<f32>) {
         let (hidden_output_vec, final_output_vec) = self.forward(input_list);
         let target_vec =  Array::from_shape_vec((target_list.len(), 1), target_list.clone()).unwrap();
 
@@ -69,7 +69,7 @@ impl NeuralNetwork {
     }
 
     /// forward pass through the neural network
-    pub fn forward(&self, input_list: &Vec<f64>) -> (Array<f64, Dim<[usize; 2]>>, Array<f64, Dim<[usize; 2]>>){
+    pub fn forward(&self, input_list: &Vec<f32>) -> (Array<f32, Dim<[usize; 2]>>, Array<f32, Dim<[usize; 2]>>){
         if input_list.len() != self.input_nodes as usize {
             panic!("input list length does not match input nodes");
         }
@@ -97,7 +97,7 @@ impl NeuralNetwork {
     }
 
     /// query the neural network
-    pub fn predict(&self, input_list: &Vec<f64>) -> Vec<f64> {
+    pub fn predict(&self, input_list: &Vec<f32>) -> Vec<f32> {
         let (_, final_output_list)= self.forward(input_list);
         let mut output_list = Vec::new();
         for i in 0..final_output_list.len() {
