@@ -50,6 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     
     let image_array: Array<f32, Dim<[usize; 2]>> = Array::from_shape_vec((28, 28), image_vec).unwrap();
 
+    // scale the input to range 0.01 to 1.00
     let  scaled_data = image_array / 255.0 * 0.99 + 0.01;
     println!("Scaled data: {:?}", scaled_data);
 
