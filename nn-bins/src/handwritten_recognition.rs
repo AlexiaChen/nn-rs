@@ -39,6 +39,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let img = image::open(recognize_image_path).unwrap();
     // to grayscale image
     let mut gray_img = img.grayscale();
+    // Why invert colorspace? Because the training data gray value is inverted. train set gray value is 0 represent white, 255 represent black.
+    // the normal case is 0 represent black, 255 represent white.
     gray_img.invert();
     let gray_img = gray_img.to_luma8();
     let gray_buffer = gray_img.to_vec();
