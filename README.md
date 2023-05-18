@@ -66,9 +66,15 @@ convert("t10k-images-idx3-ubyte", "t10k-labels-idx1-ubyte",
         "mnist_test.csv", 10000)
 ```
 
-# FAQ
+## FAQ
 
 Q: Why need to seperate the train data set and test data set?
 
 A: That is we want  to test before we train the model. Otherwise, we can let network to remember the training data set and get a high accuracy. But it is not a good model. So that it is normal case in machine learning to seperate the train data set and test data set.
+
+## References
+
+- https://github.com/makeyourownneuralnetwork/makeyourownneuralnetwork
+- https://makeyourownneuralnetwork.blogspot.com/
+- 《Make your own neural network》 by Tariq Rashid
 
