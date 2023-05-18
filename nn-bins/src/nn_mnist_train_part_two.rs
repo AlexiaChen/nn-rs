@@ -21,22 +21,18 @@ fn get_img_pixels_data(record: &StringRecord) -> Vec<u8> {
 
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Why hidden nodes is 100?
-    // Because there is no scientific way to determine the number of hidden nodes, we think neural network should find some patterns in the input data, 
-    // these patterns can be represented by the hidden nodes with shorter length., so we did not choose number which is larger than 28*28. That can force
-    // neural network to find some patterns in the input data. But if you choose a number which is too small, neural network will not find some patterns
-    // you must konw that there is no best way to determine the number of hidden nodes. The better way is to try different numbers and find the best one.
-
     // Why output nodes is 10?
     // Because there are 10 digits(0,1,2,3,4,5,6,7,8,9) in the MNIST dataset, so we choose 10 as the output nodes.
-    let mut nn = NeuralNetwork::new(28 * 28, 100, 10, 0.3);
+    let mut nn = NeuralNetwork::new(28 * 28, 200, 10, 0.1);
 
     // read full mnist train data file from 0 to 60 for i in range(0, 60]
-    println!("Start to train the neural network");
+    println!("Start to train Full mnist the neural network");
     let mut count = 0;
     let file_prefix = "./dataset/mnist_train/file";
     while count <= 60 {
         let file_path = format!("{}{}.csv", file_prefix, count);
+
+        println!("Start to train data from file: {:?}", file_path);
 
         let mut file = File::open(&file_path).expect("you must download the dataset first, https://pjreddie.com/projects/mnist-in-csv/");
         let mut contents = String::new();
@@ -64,9 +60,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             nn.train(&scaled_input_data.iter().cloned().collect(), &target_list);
         }
         count += 1;
+
+        println!("End to train data from file: {:?}", file_path);
     }
 
-    println!("End to train the neural network");
+    println!("End to train full mnist data the neural network");
     
     let mut file = File::open("./dataset/mnist_test.csv").expect("you must download the dataset first, https://pjreddie.com/projects/mnist-in-csv/");
     let mut contents = String::new();
