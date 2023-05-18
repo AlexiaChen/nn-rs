@@ -2,8 +2,8 @@ use nn::NeuralNetwork;
 
 fn main() {
     // Why hidden nodes is 100?
-    // Because there is not scientific way to determine the number of hidden nodes, we think neural network should find some patterns in the input data, 
-    // these patterns can be represented by the hidden nodes with shorter length., so we did not choose number which is larger than 28*2. That can force
+    // Because there is no scientific way to determine the number of hidden nodes, we think neural network should find some patterns in the input data, 
+    // these patterns can be represented by the hidden nodes with shorter length., so we did not choose number which is larger than 28*28. That can force
     // neural network to find some patterns in the input data. But if you choose a number which is too small, neural network will not find some patterns
     // you must konw that there is no best way to determine the number of hidden nodes. The better way is to try different numbers and find the best one.
 
