@@ -1,5 +1,5 @@
 # nn-rs
-A traditional neural network with Rust
+A traditional 3 layers neural network with Rust
 
 ## MNIST handwritten digit database
 
