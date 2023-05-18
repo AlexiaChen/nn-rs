@@ -31,8 +31,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Because there are 10 digits(0,1,2,3,4,5,6,7,8,9) in the MNIST dataset, so we choose 10 as the output nodes.
     let mut nn = NeuralNetwork::new(28 * 28, 100, 10, 0.3);
     
-  
-
     let mut file = File::open("./dataset/mnist_train/file0.csv").expect("you must download the dataset first, https://pjreddie.com/projects/mnist-in-csv/");
     let mut contents = String::new();
         file.read_to_string(&mut contents)?;
@@ -64,7 +62,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     println!("End to train the neural network");
 
-    // manually test the neural network
+    
     let mut file = File::open("./dataset/mnist_test.csv").expect("you must download the dataset first, https://pjreddie.com/projects/mnist-in-csv/");
     let mut contents = String::new();
         file.read_to_string(&mut contents)?;
@@ -74,21 +72,42 @@ fn main() -> Result<(), Box<dyn Error>> {
         .delimiter(b',')
         .from_reader(contents.as_bytes());
 
-    // get the first record
-    let result = reader.records().next().unwrap().unwrap();
-    let seven = result.get(0).unwrap();
-    let seven = seven.parse::<u8>().unwrap();
-    println!("The real digit is: {}", seven);
+    let mut scored_card: Vec<u64> = vec![];
+    for result in reader.records() {
+        let record = result?;
+        
+        let image_vec: Vec<u8> = get_img_pixels_data(&record);
+        let image_vec: Vec<f32> = image_vec.iter().map(|x| *x as f32).collect();
+        let image_array: Array<f32, Dim<[usize; 2]>> = Array::from_shape_vec((28, 28), image_vec).unwrap();
+        // scale the input to range 0.01 to 1.00
+        let scaled_input_data = image_array / 255.0 * 0.99 + 0.01;
 
-    let image_vec: Vec<u8> = get_img_pixels_data(&result);
-    let image_vec: Vec<f32> = image_vec.iter().map(|x| *x as f32).collect();
-    let image_array: Array<f32, Dim<[usize; 2]>> = Array::from_shape_vec((28, 28), image_vec).unwrap();
-    // scale the input to range 0.01 to 1.00
-    let scaled_data = image_array / 255.0 * 0.99 + 0.01;
-    let target_list = nn.predict(&scaled_data.iter().cloned().collect());
+        let correct_digit = record.get(0).unwrap();
+        let correct_digit = correct_digit.parse::<u8>().unwrap();
+        
+        let output_list: Vec<f32> = nn.predict(&scaled_input_data.iter().cloned().collect());
 
-    println!("The digit seven's predicted vector is: {:?}", target_list);
-    println!("The max value in the vector index 7 from above vector");
+        // find the max value's index in the output list
+        let mut max_value = 0.0;
+        let mut max_index = 0;
+        for (index, value) in output_list.iter().enumerate() {
+            if *value > max_value {
+                max_value = *value;
+                max_index = index;
+            }
+        }
+
+        if max_index == correct_digit as usize {
+            scored_card.push(1);
+        } else {
+            scored_card.push(0);
+        }
+       
+    }
+
+    // calculate the performance score, the performance score is the ratio of correct answers to the total number of tests
+    let performance_score: f32 = scored_card.iter().sum::<u64>() as f32 / scored_card.len() as f32;
+    println!("part of full train data result performance score: {}", performance_score);
 
     Ok(())
    
