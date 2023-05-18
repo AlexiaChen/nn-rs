@@ -54,6 +54,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let  scaled_data = image_array / 255.0 * 0.99 + 0.01;
     println!("Scaled data: {:?}", scaled_data);
 
+    // design output vector for record 0
+    // length is 10 is because we have 10 digits (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) so we need 10 output nodes of the neural network for this case
+    let mut target_list: Vec<f32> = vec![0.01; 10];
+    let five = records[0].get(0).unwrap();
+    let five = five.parse::<u8>().unwrap();
+    target_list[five as usize] = 0.99;
+
+    println!("Target list for five: {:?}", target_list);
+
     Ok(())
    
 }
