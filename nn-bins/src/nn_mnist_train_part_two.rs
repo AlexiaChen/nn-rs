@@ -110,7 +110,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // calculate the performance score, the performance score is the ratio of correct answers to the total number of tests
     let performance_score: f32 = scored_card.iter().sum::<u64>() as f32 / scored_card.len() as f32;
-    println!("full mnist train data result performance score: {}", performance_score);
+    println!("full mnist train data with 200 hidden layers and 0.1 learning rate result performance score: {}", performance_score);
 
     Ok(())
    
